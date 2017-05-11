@@ -1,0 +1,3 @@
+# MiniMax
+
+Trabalho de IA
