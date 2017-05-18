@@ -1,7 +1,7 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.BufferedWriter;
-import java.io.InputStreamWriter;
+//import java.io.InputStreamWriter;
 
 
 class Node{
@@ -18,29 +18,30 @@ class Node{
         this.depth = depth;
         this.player = player;
         this.sticksLeft = sticksLeft;
-        this.children = new Node[200];
-        this.createChildren();
+        this.children = createChildren();
 
     }
 
-    public void createChildren(){
+    public Node[] createChildren(){
 
         int value = 0;
-        Node node;
+        Node[] node = new Node[4];
 
         if (this.depth >= 0){
 
-            for(int i = 1; i <= 3; ++ i){
+            for(int i = 0; i < 4; ++ i){
 
                 value = this.sticksLeft -1;
-                node = new Node(this.depth - 1, this.player*-1,
+                node[i] = new Node(this.depth - 1, this.player*-1,
                             value, this.realValue(value));
-                BufferedWriter br = new BufferedWriter(new FileWriter());
-                System.out.println("" + node);
+                //BufferedWriter br = new BufferedWriter(new FileWriter());
+                //System.out.println("" + node);
 
             }
 
         }
+
+        return node;
 
     }
 
@@ -139,7 +140,7 @@ public class StickGame{
         int sticksChoice = 0;
         int bestChoice = 0;
         int bestValue = 0;
-        int value =0;
+        int value = 0;
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         String input = "";
         Node node;
