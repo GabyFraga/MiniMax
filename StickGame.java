@@ -25,11 +25,11 @@ class Node{
     public Node[] createChildren(){
 
         int value = 0;
-        Node[] node = new Node[4];
+        Node[] node = new Node[2];
 
         if (this.depth >= 0){
 
-            for(int i = 0; i < 4; ++ i){
+            for(int i = 0; i < 2; ++ i){
 
                 value = this.sticksLeft -1;
                 node[i] = new Node(this.depth - 1, this.player*-1,
@@ -145,17 +145,35 @@ public class StickGame{
         String input = "";
         Node node;
         Node child;
+        boolean remove = false;
 
         System.out.println("Escolha entre um e dois palitos para remover. \n" +
                     "Seja o último jogador a remover um palito para vencer.");
         while(sticksTotal > 0){
 
+            remove = false;
+
             System.out.println("Ainda há "+sticksTotal+" palitos. Deseja retirar"+
                                 " um ou dois palitos?");
-            try{
-                input = br.readLine();
-            }catch(Exception e){}
-            sticksChoice = Integer.parseInt(input);
+
+            while(!remove){
+
+                try{
+                    input = br.readLine();
+                    sticksChoice = Integer.parseInt(input);
+                }catch(Exception e){System.out.println("Digite apenas números entre um e dois.");}
+
+                if(sticksChoice < 1 || sticksChoice > 2){
+
+                    System.out.println("Favor selecionar novamente. Apenas um ou dois palitos.");
+
+                }else{
+
+                    remove = true;
+
+                }
+
+            }
             sticksTotal -= sticksChoice;
 
             if(hasWon(sticksTotal, currentPlayer)){
