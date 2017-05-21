@@ -7,10 +7,10 @@ import java.io.BufferedWriter;
 class Node{
 
     public final int MAXSIZE = 2147483647;
-    public int depth;
-    public int player;
-    public int sticksLeft;
-    public int gameState;
+    public int depth; //o quao fundo estamos na árvore. Começa com por exemplo 4 e vai decrementando até 0
+    public int player; //+1 ou -1
+    public int sticksLeft; //quantos palitos sobram nessa escolha
+    public int gameState; //valor do nó (-infinito, 0 ou +infinito)
     public Node[] children;
 
     public Node(int depth, int player, int sticksLeft, int gameState){
@@ -24,16 +24,17 @@ class Node{
 
     public Node[] createChildren(){
 
-        int value = 0;
-        Node[] node = new Node[2];
+        int sticksLeft = 0;
+        Node[] node = new Node[3];
 
-        if (this.depth >= 0){
+        if (this.depth >= 0){ //teste pra saber se acabaram os níveis da árvore
 
-            for(int i = 0; i < 2; ++ i){
+            for(int i = 1; i < 3; ++ i){ //loop para 1 ou 2 palitos
 
-                value = this.sticksLeft -1;
-                node[i] = new Node(this.depth - 1, this.player*-1,
-                            value, this.realValue(value));
+                sticksLeft = this.sticksLeft -1;
+                node[i] = new Node(this.depth - 1, //minimiza a profundidade por 1
+                                    this.player*-1, //troca o jogador
+                                    sticksLeft, this.realValue(sticksLeft));
                 //BufferedWriter br = new BufferedWriter(new FileWriter());
                 //System.out.println("" + node);
 
@@ -47,11 +48,11 @@ class Node{
 
     public int realValue(int value){
 
-        if (value == 0){
+        if (value == 0){ //o jogador ganhou
 
             return MAXSIZE * this.player;
 
-        }else if(value < 0){
+        }else if(value < 0){ //o jogador passou da quantidade de palitos e perdeu
 
             return MAXSIZE * this.player * -1;
 
@@ -109,34 +110,34 @@ public class StickGame{
         Node child;
         int value = 0;
 
-        if((depth == 0) || Math.abs(node.gameState) == MAXSIZE){
+        if((depth == 0) || Math.abs(node.gameState) == MAXSIZE){ //checa se chegamos ao fim da árvore ou se estamos em um nó que indica a vitória de qualquer um dos jogadores
 
             return node.gameState;
 
         }
 
-        bestValue = MAXSIZE * currentPlayer * -1;
-        for(int i = 0; i < node.children.length; ++i){
+        bestValue = MAXSIZE * currentPlayer * -1; //salva o pior caso (se vc eh o max, salva o menor possivel, e vice-versa)
+        for(int i = 1; i < node.children.length; ++i){ //itera pelos filhos
 
             child = node.children[i];
-            value = MiniMax(child, depth-1, currentPlayer*-1);
-            if(Math.abs(currentPlayer*MAXSIZE-value) <=
+            value = MiniMax(child, depth-1, currentPlayer*-1); //recebe o valor do nó (pode vir da condição de parada ou do fim do método)
+            if(Math.abs(currentPlayer*MAXSIZE-value) <
                 Math.abs(currentPlayer*MAXSIZE-bestValue)){
 
-                    bestValue = value;
+                    bestValue = value; //atualiza o melhor valor
             }
 
         }
 
-        return bestValue;
+        return bestValue; //retorna o melhor valor
 
     }
 
     public static void main(String[]args){
 
-        int sticksTotal = 13;
+        int sticksTotal = 11;
         int depth = 4;
-        int currentPlayer = 1;
+        int currentPlayer = 1; //jogador humano
         int sticksChoice = 0;
         int bestChoice = 0;
         int bestValue = 0;
@@ -183,7 +184,7 @@ public class StickGame{
                 bestChoice = -100;
                 bestValue = currentPlayer * MAXSIZE * -1;
 
-                for(int i = 0; i < node.children.length; ++i){
+                for(int i = 1; i < node.children.length; ++i){
 
                     child = node.children[i];
                     value = MiniMax(child, depth, currentPlayer*-1);
